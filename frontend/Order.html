@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Orders</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+  <div class="container mt-4">
+    <h2>My Orders</h2>
+    <div id="ordersList"></div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token");
+
+    fetch("http://localhost:8080/orders", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((orders) => {
+        const container = document.getElementById("ordersList");
+
+        if (orders.length === 0) {
+          container.innerHTML = "<p>No orders yet.</p>";
+          return;
+        }
+
+        let html = "<ul class='list-group'>";
+        orders.forEach((order) => {
+          html += `<li class="list-group-item d-flex justify-content-between align-items-center">
+            Order #${order.id}
+            <span>Total: ₹${order.totalPrice}</span>
+          </li>`;
+        });
+        html += "</ul>";
+        container.innerHTML = html;
+      });
+  </script>
+</body>
+</html>
